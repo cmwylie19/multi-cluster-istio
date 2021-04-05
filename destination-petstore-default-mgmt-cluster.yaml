@@ -1,0 +1,36 @@
+apiVersion: discovery.mesh.gloo.solo.io/v1
+kind: Destination
+metadata:
+  name: details-bookinfo-mgmt-cluster
+  namespace: gloo-mesh
+spec:
+  kubeService:
+    endpointSubsets:
+    - endpoints:
+      - ipAddress: 10.244.0.7
+        labels:
+          app: details
+          version: v1
+        subLocality:
+          zone: us-east-1c
+      ports:
+      - name: http
+        port: 9080
+        protocol: TCP
+    labels:
+      app: details
+      service: details
+    ports:
+    - name: http
+      port: 9080
+      protocol: TCP
+    ref:
+      clusterName: mgmt-cluster
+      name: details
+      namespace: bookinfo
+    region: us-east-1
+    workloadSelectorLabels:
+      app: petstore
+  mesh:
+    name: istiod-istio-system-mgmt-cluster
+    namespace: gloo-mesh

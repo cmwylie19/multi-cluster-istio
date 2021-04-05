@@ -115,6 +115,11 @@ spec:
 EOF
 ```
 
+### Register a cluster
+```
+meshctl cluster register enterprise mgmt-cluster --relay-server-address enterprise-networking.gloo-mesh.service.cluster.local:9900
+```
+
 ## Using Gloo Mesh
 Get kubernetes clustes  
 `k get kubernetesclusters -n gloo-mesh`
@@ -149,3 +154,7 @@ Get workloads in the mesh
 
 Get Destinations in the mesh  
 `k -n gloo-mesh get workloads`
+
+
+Portfoward the Product Page to 8080 Local:  
+`k port-forward -n bookinfo svc/productpage 8080:9080`
