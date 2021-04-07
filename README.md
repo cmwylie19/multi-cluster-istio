@@ -6,6 +6,13 @@ _Proof of concept for multi-cluster Istio using Gloo Mesh._
 - Install meshctl cli tool
 
 ## Install
+Helm installation
+```
+helm uninstall -n gloo-mesh gloo-mesh
+k create ns gloo-mesh
+helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh  --set licenseKey=$GLOO_MESH_LICENSE_KEY
+```
+
 Spin up two kind clusters:  
 `meshctl demo istio-multicluster init`
 
