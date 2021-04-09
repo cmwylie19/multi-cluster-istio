@@ -10,7 +10,7 @@ _Set environmental variables for each cluster_
 REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_cw-remote-cluster
 MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_cw-management-cluster
 ```
-## Install
+## Install Gloo Mesh
 Helm installation
 ```
 helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
@@ -19,6 +19,25 @@ helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-ente
 k create ns gloo-mesh
 helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh  --set licenseKey=$GLOO_MESH_LICENSE_KEY
 ```
+
+## Update Enterprise Networking
+Path the enterprise networking to be of type loadbalancer
+```
+kubectl -n gloo-mesh patch svc enterprise-networking -p '{"spec": {"type": "LoadBalancer"}}' 
+```
+Path the istio ingressgateway to be of type loadbalancer
+```
+kubectl -n gloo-mesh patch svc istio-ingressgateway -p '{"spec": {"type": "LoadBalancer"}}' 
+```
+
+## Register Clusters
+```
+SVC=$(kubectl --context mgmt -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+meshctl cluster register --mgmt-context=$MGMT_CONTEXT --remote-context=$MGMT_CONTEXT --relay-server-address=$SVC:9900 enterprise cluster1 --cluster-domain cluster.local
+meshctl cluster register --mgmt-context=$MGMT_CONTEXT --remote-context=$REMOTE_CONTEXT --relay-server-address=$SVC:9900 enterprise cluster2 --cluster-domain cluster.local
+```
+
 ## Install Istio in each cluster
 
 Management Cluster
@@ -125,97 +144,6 @@ Check the install:
 Install Gloo Mesh enterprise:  
 `meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY`
 
-Install Istio in Management Plane:  
-```
-cat << EOF | istioctl manifest install -y --context $MGMT_CONTEXT -f -
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
-metadata:
-  name: example-istiooperator
-  namespace: istio-system
-spec:
-  profile: minimal
-  meshConfig:
-    enableAutoMtls: true
-    defaultConfig:
-      proxyMetadata:
-        # Enable Istio agent to handle DNS requests for known hosts
-        # Unknown hosts will automatically be resolved using upstream dns servers in resolv.conf
-        ISTIO_META_DNS_CAPTURE: "true"
-  components:
-    # Istio Gateway feature
-    ingressGateways:
-    - name: istio-ingressgateway
-      enabled: true
-      k8s:
-        env:
-          - name: ISTIO_META_ROUTER_MODE
-            value: "sni-dnat"
-        service:
-          type: NodePort
-          ports:
-            - port: 80
-              targetPort: 8080
-              name: http2
-            - port: 443
-              targetPort: 8443
-              name: https
-            - port: 15443
-              targetPort: 15443
-              name: tls
-              nodePort: 32001
-  values:
-    global:
-      pilotCertProvider: istiod
-EOF
-```
-
-Install Istio in Control Plane: 
-```
-
-cat << EOF | istioctl manifest install -y --context $REMOTE_CONTEXT -f -
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
-metadata:
-  name: example-istiooperator
-  namespace: istio-system
-spec:
-  profile: minimal
-  meshConfig:
-    enableAutoMtls: true
-    defaultConfig:
-      proxyMetadata:
-        # Enable Istio agent to handle DNS requests for known hosts
-        # Unknown hosts will automatically be resolved using upstream dns servers in resolv.conf
-        ISTIO_META_DNS_CAPTURE: "true"
-  components:
-    # Istio Gateway feature
-    ingressGateways:
-    - name: istio-ingressgateway
-      enabled: true
-      k8s:
-        env:
-          - name: ISTIO_META_ROUTER_MODE
-            value: "sni-dnat"
-        service:
-          type: NodePort
-          ports:
-            - port: 80
-              targetPort: 8080
-              name: http2
-            - port: 443
-              targetPort: 8443
-              name: https
-            - port: 15443
-              targetPort: 15443
-              name: tls
-              nodePort: 32000
-  values:
-    global:
-      pilotCertProvider: istiod
-EOF
-```
-
 ### Register a cluster
 Make sure enterprise networking service in `gloo-mesh` namespace is set to type LoadBalancer.
 ```
@@ -237,6 +165,10 @@ meshctl cluster register enterprise \
 meshctl cluster register enterprise --remote-context=$MGMT_CONTEXT --relay-server-address $RELAY_ADDRESS mgmt-cluster 
 ```
 
+## DeRegister Cluster
+```
+✗ meshctl cluster deregister enterprise remote-cluster
+```
 
 <!-- ```
 meshctl cluster register enterprise mgmt-cluster --relay-server-address enterprise-networking.gloo-mesh.service.cluster.local:9900

@@ -1,0 +1,13 @@
+kubectl --context $MGMT_CONTEXT label namespace default istio-injection=enabled
+# deploy bookinfo application components for all versions less than v3
+kubectl --context $MGMT_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app,version notin (v3)'
+# deploy all bookinfo service accounts
+kubectl --context $MGMT_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account'
+# configure ingress gateway to access bookinfo
+kubectl --context $MGMT_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/networking/bookinfo-gateway.yaml
+
+kubectl --context $REMOTE_CONTEXT label namespace default istio-injection=enabled
+# deploy all bookinfo service accounts and application components for all versions
+kubectl --context $REMOTE_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml
+# configure ingress gateway to access bookinfo
+kubectl --context $REMOTE_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/networking/bookinfo-gateway.yaml
