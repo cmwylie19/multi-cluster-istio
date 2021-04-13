@@ -1,0 +1,35 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  annotations:
+    parents.networking.mesh.gloo.solo.io: '{"networking.mesh.gloo.solo.io/v1, Kind=VirtualMesh":[{"name":"virtual-mesh","namespace":"gloo-mesh"}]}'
+  creationTimestamp: "2021-04-13T14:39:45Z"
+  generation: 1
+  labels:
+    cluster.multicluster.solo.io: ""
+    owner.networking.mesh.gloo.solo.io: gloo-mesh
+    relay-agent: mgmt-cluster
+  managedFields:
+  - apiVersion: security.istio.io/v1beta1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:parents.networking.mesh.gloo.solo.io: {}
+        f:labels:
+          .: {}
+          f:cluster.multicluster.solo.io: {}
+          f:owner.networking.mesh.gloo.solo.io: {}
+          f:relay-agent: {}
+      f:spec: {}
+      f:status: {}
+    manager: enterprise-agent
+    operation: Update
+    time: "2021-04-13T14:39:45Z"
+  name: global-access-control
+  namespace: istio-system
+  resourceVersion: "2799472"
+  selfLink: /apis/security.istio.io/v1beta1/namespaces/istio-system/authorizationpolicies/global-access-control
+  uid: 181a60f4-fcde-4ca2-ad94-a520d100a9bd
+spec: {}
