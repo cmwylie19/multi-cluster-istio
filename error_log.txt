@@ -1,0 +1,253 @@
+ meshctl uninstall
+Uninstalling Helm chart
+error: uninstalling gloo-mesh: uninstalling helm release gloo-mesh: uninstallation completed with 1 error(s): an error on the server ("Internal Server Error: \"/api/v1/namespaces/gloo-mesh/secrets/gloo-mesh-enterprise-license\": the server is currently unable to handle the request") has prevented the request from succeeding (delete secrets gloo-mesh-enterprise-license)
+➜  gloo-mesh-demo git:(master) ✗ meshctl uninstall
+Uninstalling Helm chart
+warning: release gloo-mesh does not exist, nothing to uninstall
+➜  gloo-mesh-demo git:(master) ✗ k delete ns gloo-mesh
+namespace "gloo-mesh" deleted
+Error from server (InternalError): an error on the server ("Internal Server Error: \"/api/v1/namespaces?fieldSelector=metadata.name%3Dgloo-mesh\": the server is currently unable to handle the request") has prevented the request from succeeding
+➜  gloo-mesh-demo git:(master) ✗ k get ns
+NAME              STATUS   AGE
+default           Active   5d18h
+kube-node-lease   Active   5d18h
+kube-public       Active   5d18h
+kube-system       Active   5d18h
+➜  gloo-mesh-demo git:(master) ✗ GLOO_MESH_LICENSE_KEY="$(cat ~/Playground/licensing/mesh.key)"   
+➜  gloo-mesh-demo git:(master) ✗ 
+meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY
+Installing Helm chart
+error: installing gloo-mesh-enterprise: updating CRDs: an error on the server ("Internal Server Error: \"/apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/wasmdeployments.networking.enterprise.mesh.gloo.solo.io\": the server is currently unable to handle the request") has prevented the request from succeeding (put customresourcedefinitions.apiextensions.k8s.io wasmdeployments.networking.enterprise.mesh.gloo.solo.io)
+➜  gloo-mesh-demo git:(master) ✗ k get ns 
+NAME              STATUS   AGE
+default           Active   5d18h
+gloo-mesh         Active   50s
+kube-node-lease   Active   5d18h
+kube-public       Active   5d18h
+kube-system       Active   5d18h
+➜  gloo-mesh-demo git:(master) ✗ k delete ns gloo-mesh
+namespace "gloo-mesh" deleted
+➜  gloo-mesh-demo git:(master) ✗ cd ..
+➜  Playground git clone https://github.com/solo-io/gloo-mesh.git
+Cloning into 'gloo-mesh'...
+remote: Enumerating objects: 764, done.
+remote: Counting objects: 100% (764/764), done.
+remote: Compressing objects: 100% (305/305), done.
+Receiving objects:  14% (7167/51186), 20.77 MiB | 41.53 MiReceiving objects:  15% (7678/51186), 20.77 MiB | 41.53 MiReceiving objects:  16% (8190/51186), 20.77 MiB | 41.53 MiReceiving objects:  17% (8702/51186), 20.77 MiB | 41.53 MiReceiving objects:  18% (9214/51186), 20.77 MiB | 41.53 MiReceiving objects:  19% (9726/51186), 20.77 MiB | 41.53 MiReceiving objects:  20% (10238/51186), 20.77 MiB | 41.53 MReceiving objects:  21% (10750/51186), 20.77 MiB | 41.53 MReceiving objects:  22% (11261/51186), 20.77 MiB | 41.53 MReceiving objects:  23% (11773/51186), 20.77 MiB | 41.53 MReceiving objects:  24% (12285/51186), 20.77 MiB | 41.53 MReceiving objects:  25% (12797/51186), 20.77 MiB | 41.53 MReceiving objects:  26% (13309/51186), 20.77 MiB | 41.53 MReceiving objects:  27% (13821/51186), 20.77 MiB | 41.53 MReceiving objects:  28% (14333/51186), 20.77 MiB | 41.53 MReceiving objects:  29% (14844/51186), 20.77 MiB | 41.53 MReceiving objects:  30% (15356/51186), 20.77 MiB | 41.53 MReceiving objects:  31% (15868/51186), 20.77 MiB | 41.53 MReceiving objects:  32% (16380/51186), 20.77 MiB | 41.53 MReceiving objects:  33% (16892/51186), 20.77 MiB | 41.53 MReceiving objects:  34% (17404/51186), 20.77 MiB | 41.53 MReceiving objects:  35% (17916/51186), 20.77 MiB | 41.53 MReceiving objects:  36% (18427/51186), 20.77 MiB | 41.53 MReceiving objects:  37% (18939/51186), 20.77 MiB | 41.53 MReceiving objects:  38% (19451/51186), 20.77 MiB | 41.53 MReceiving objects:  39% (19963/51186), 20.77 MiB | 41.53 MReceiving objects:  40% (20475/51186), 20.77 MiB | 41.53 MReceiving objects:  41% (20987/51186), 20.77 MiB | 41.53 MReceiving objects:  42% (21499/51186), 20.77 MiB | 41.53 MReceiving objects:  43% (22010/51186), 20.77 MiB | 41.53 MReceiving objects:  44% (22522/51186), 20.77 MiB | 41.53 MReceiving objects:  45% (23034/51186), 20.77 MiB | 41.53 MReceiving objects:  46% (23546/51186), 20.77 MiB | 41.53 MReceiving objects:  47% (24058/51186), 20.77 MiB | 41.53 MReceiving objects:  48% (24570/51186), 20.77 MiB | 41.53 MReceiving objects:  49% (25082/51186), 20.77 MiB | 41.53 MReceiving objects:  50% (25593/51186), 20.77 MiB | 41.53 MReceiving objects:  51% (26105/51186), 20.77 MiB | 41.53 MReceiving objects:  52% (26617/51186), 20.77 MiB | 41.53 MReceiving objects:  53% (27129/51186), 20.77 MiB | 41.53 MReceiving objects:  54% (27641/51186), 20.77 MiB | 41.53 MReceiving objects:  55% (28153/51186), 20.77 MiB | 41.53 MReceiving objects:  56% (28665/51186), 20.77 MiB | 41.53 MReceiving objects:  57% (29177/51186), 20.77 MiB | 41.53 MReceiving objects:  58% (29688/51186), 20.77 MiB | 41.53 MReceiving objects:  59% (30200/51186), 20.77 MiB | 41.53 MReceiving objects:  60% (30712/51186), 20.77 MiB | 41.53 MReceiving objects:  61% (31224/51186), 20.77 MiB | 41.53 MReceiving objects:  62% (31736/51186), 20.77 MiB | 41.53 MReceiving objects:  63% (32248/51186), 20.77 MiB | 41.53 MReceiving objects:  64% (32760/51186), 20.77 MiB | 41.53 MReceiving objects:  65% (33271/51186), 20.77 MiB | 41.53 MReceiving objects:  66% (33783/51186), 20.77 MiB | 41.53 MReceiving objects:  67% (34295/51186), 20.77 MiB | 41.53 MReceiving objects:  68% (34807/51186), 20.77 MiB | 41.53 MReceiving objects:  69% (35319/51186), 20.77 MiB | 41.53 MReceiving objects:  70% (35831/51186), 20.77 MiB | 41.53 MReceiving objects:  71% (36343/51186), 20.77 MiB | 41.53 MReceiving objects:  72% (36854/51186), 20.77 MiB | 41.53 MReceiving objects:  73% (37366/51186), 20.77 MiB | 41.53 MReceiving objects:  74% (37878/51186), 20.77 MiB | 41.53 MReceiving objects:  75% (38390/51186), 20.77 MiB | 41.53 MReceiving objects:  76% (38902/51186), 20.77 MiB | 41.53 MReceiving objects:  77% (39414/51186), 20.77 MiB | 41.53 MReceiving objects:  78% (39926/51186), 20.77 MiB | 41.53 MReceiving objects:  79% (40437/51186), 20.77 MiB | 41.53 MReceiving objects:  80% (40949/51186), 20.77 MiB | 41.53 MReceiving objects:  80% (41261/51186), 48.80 MiB | 48.80 MReceiving objects:  81% (41461/51186), 48.80 MiB | 48.80 MReceiving objects:  82% (41973/51186), 48.80 MiB | 48.80 MReceiving objects:  83% (42485/51186), 48.80 MiB | 48.80 MReceiving objects:  84% (42997/51186), 48.80 MiB | 48.80 MReceiving objects:  85% (43509/51186), 48.80 MiB | 48.80 MReceiving objects:  86% (44020/51186), 48.80 MiB | 48.80 MReceiving objects:  87% (44532/51186), 48.80 MiB | 48.80 MReceiving objects:  88% (45044/51186), 48.80 MiB | 48.80 MReceiving objects:  89% (45556/51186), 48.80 MiB | 48.80 MReceiving objects:  90% (46068/51186), 48.80 MiB | 48.80 MReceiving objects:  91% (46580/51186), 48.80 MiB | 48.80 MReceiving objects:  92% (47092/51186), 48.80 MiB | 48.80 MReceiving objects:  93% (47603/51186), 48.80 MiB | 48.80 MReceiving objects:  94% (48115/51186), 48.80 MiB | 48.80 MReceiving objects:  95% (48627/51186), 48.80 MiB | 48.80 MReceiving objects:  96% (49139/51186), 48.80 MiB | 48.80 MReceiving objects:  97% (49651/51186), 48.80 MiB | 48.80 MReceiving objects:  98% (50163/51186), 48.80 MiB | 48.80 MReceiving objects:  99% (50675/51186), 48.80 MiB | 48.80 Mremote: Total 51186 (delta 431), reused 711 (delta 409), pack-reused 50422
+Receiving objects: 100% (51186/51186), 48.80 MiB | 48.80 MReceiving objects: 100% (51186/51186), 74.69 MiB | 52.39 MiB/s, done.
+Resolving deltas: 100% (28870/28870), done.
+➜  Playground cd gloo-mesh
+➜  gloo-mesh git:(main) k delete -f install/helm/gloo-mesh-crds/crds 
+customresourcedefinition.apiextensions.k8s.io "destinations.discovery.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "workloads.discovery.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "meshes.discovery.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "kubernetesclusters.multicluster.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "wasmdeployments.networking.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "virtualdestinations.networking.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "trafficpolicies.networking.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "accesspolicies.networking.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "virtualmeshes.networking.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "accesslogrecords.observability.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "roles.rbac.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "rolebindings.rbac.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "settings.settings.mesh.gloo.solo.io" deleted
+➜  gloo-mesh git:(main) cd ../gloo-mesh-demo 
+➜  gloo-mesh-demo git:(master) ✗                          meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY
+➜  gloo-mesh-demo git:(master) ✗ meshctl uninstall
+Uninstalling Helm chart
+warning: release gloo-mesh does not exist, nothing to uninstall
+➜  gloo-mesh-demo git:(master) ✗                          meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY
+Installing Helm chart
+error: installing gloo-mesh-enterprise: installing helm chart: rendered manifests contain a resource that already exists. Unable to continue with install: could not get information about the resource: an error on the server ("Internal Server Error: \"/apis/rbac.authorization.k8s.io/v1/clusterroles/gloo-mesh-dashboard\": the server is currently unable to handle the request") has prevented the request from succeeding (get clusterroles.rbac.authorization.k8s.io gloo-mesh-dashboard)
+➜  gloo-mesh-demo git:(master) ✗ meshctl uninstall
+Uninstalling Helm chart
+warning: release gloo-mesh does not exist, nothing to uninstall
+➜  gloo-mesh-demo git:(master) ✗ helm uninstall -n gloo-mesh gloo-mesh-enterprise
+Error: uninstall: Release not loaded: gloo-mesh-enterprise: release: not found
+➜  gloo-mesh-demo git:(master) ✗                                                 
+meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY
+Installing Helm chart
+error: installing gloo-mesh-enterprise: installing helm chart: an error on the server ("Internal Server Error: \"/apis/rbac.enterprise.mesh.gloo.solo.io/v1/namespaces/gloo-mesh/roles\": the server is currently unable to handle the request") has prevented the request from succeeding (post roles.rbac.enterprise.mesh.gloo.solo.io)
+➜  gloo-mesh-demo git:(master) ✗ k delete ns gloo-mesh
+namespace "gloo-mesh" deleted
+➜  gloo-mesh-demo git:(master) ✗ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "glooe" chart repository
+...Successfully got an update from the "dev-portal" chart repository
+...Successfully got an update from the "enterprise-agent" chart repository
+...Successfully got an update from the "gloo-mesh-enterprise" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+➜  gloo-mesh-demo git:(master) ✗ k create ns gloo-mesh
+helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY
+namespace/gloo-mesh created
+Error: rendered manifests contain a resource that already exists. Unable to continue with install: ClusterRole "enterprise-networking" in namespace "" exists and cannot be imported into the current release: invalid ownership metadata; annotation validation error: key "meta.helm.sh/release-name" must equal "gloo-mesh-enterprise": current value is "gloo-mesh"
+➜  gloo-mesh-demo git:(master) ✗ k get clusterrole
+NAME                                                                   CREATED AT
+admin                                                                  2021-04-08T18:05:23Z
+cloud-provider                                                         2021-04-08T18:05:53Z
+cluster-admin                                                          2021-04-08T18:05:23Z
+edit                                                                   2021-04-08T18:05:23Z
+enterprise-agent                                                       2021-04-13T23:15:36Z
+enterprise-networking                                                  2021-04-14T12:33:37Z
+external-metrics-reader                                                2021-04-08T18:05:54Z
+gce:beta:kubelet-certificate-bootstrap                                 2021-04-08T18:05:54Z
+gce:beta:kubelet-certificate-rotation                                  2021-04-08T18:05:54Z
+gce:cloud-provider                                                     2021-04-08T18:05:53Z
+gke-metrics-agent                                                      2021-04-08T18:05:48Z
+gloo-mesh-dashboard                                                    2021-04-14T12:33:37Z
+istio-reader-istio-system                                              2021-04-08T18:41:41Z
+istiod-istio-system                                                    2021-04-08T18:41:41Z
+kubelet-api-admin                                                      2021-04-08T18:05:54Z
+pdcsi-attacher-role                                                    2021-04-08T18:05:50Z
+pdcsi-provisioner-role                                                 2021-04-08T18:05:50Z
+pdcsi-resizer-role                                                     2021-04-08T18:05:50Z
+pdcsi-snapshotter-role                                                 2021-04-08T18:05:50Z
+rbac-webhook                                                           2021-04-14T12:33:37Z
+read-updateinfo                                                        2021-04-08T18:05:53Z
+snapshot-controller-runner                                             2021-04-08T18:05:51Z
+stackdriver:metadata-agent                                             2021-04-08T18:05:44Z
+storage-version-migration-crd-creator                                  2021-04-08T18:05:52Z
+storage-version-migration-initializer                                  2021-04-08T18:05:52Z
+storage-version-migration-trigger                                      2021-04-08T18:05:52Z
+system:aggregate-to-admin                                              2021-04-08T18:05:23Z
+system:aggregate-to-edit                                               2021-04-08T18:05:23Z
+system:aggregate-to-view                                               2021-04-08T18:05:23Z
+system:auth-delegator                                                  2021-04-08T18:05:23Z
+system:basic-user                                                      2021-04-08T18:05:23Z
+system:certificates.k8s.io:certificatesigningrequests:nodeclient       2021-04-08T18:05:23Z
+system:certificates.k8s.io:certificatesigningrequests:selfnodeclient   2021-04-08T18:05:23Z
+system:certificates.k8s.io:kube-apiserver-client-approver              2021-04-08T18:05:23Z
+system:certificates.k8s.io:kube-apiserver-client-kubelet-approver      2021-04-08T18:05:24Z
+system:certificates.k8s.io:kubelet-serving-approver                    2021-04-08T18:05:23Z
+system:certificates.k8s.io:legacy-unknown-approver                     2021-04-08T18:05:23Z
+system:clustermetrics                                                  2021-04-08T18:05:48Z
+system:controller:attachdetach-controller                              2021-04-08T18:05:24Z
+system:controller:certificate-controller                               2021-04-08T18:05:24Z
+system:controller:clusterrole-aggregation-controller                   2021-04-08T18:05:24Z
+system:controller:cronjob-controller                                   2021-04-08T18:05:24Z
+system:controller:daemon-set-controller                                2021-04-08T18:05:24Z
+system:controller:deployment-controller                                2021-04-08T18:05:24Z
+system:controller:disruption-controller                                2021-04-08T18:05:24Z
+system:controller:endpoint-controller                                  2021-04-08T18:05:24Z
+system:controller:endpointslice-controller                             2021-04-08T18:05:24Z
+system:controller:expand-controller                                    2021-04-08T18:05:24Z
+system:controller:generic-garbage-collector                            2021-04-08T18:05:24Z
+system:controller:glbc                                                 2021-04-08T18:05:54Z
+system:controller:horizontal-pod-autoscaler                            2021-04-08T18:05:24Z
+system:controller:job-controller                                       2021-04-08T18:05:24Z
+system:controller:namespace-controller                                 2021-04-08T18:05:24Z
+system:controller:node-controller                                      2021-04-08T18:05:24Z
+system:controller:persistent-volume-binder                             2021-04-08T18:05:24Z
+system:controller:pod-garbage-collector                                2021-04-08T18:05:24Z
+system:controller:pv-protection-controller                             2021-04-08T18:05:24Z
+system:controller:pvc-protection-controller                            2021-04-08T18:05:24Z
+system:controller:replicaset-controller                                2021-04-08T18:05:24Z
+system:controller:replication-controller                               2021-04-08T18:05:24Z
+system:controller:resourcequota-controller                             2021-04-08T18:05:24Z
+system:controller:root-ca-cert-publisher                               2021-04-08T18:05:24Z
+system:controller:route-controller                                     2021-04-08T18:05:24Z
+system:controller:service-account-controller                           2021-04-08T18:05:24Z
+system:controller:service-controller                                   2021-04-08T18:05:24Z
+system:controller:statefulset-controller                               2021-04-08T18:05:24Z
+system:controller:ttl-controller                                       2021-04-08T18:05:24Z
+system:discovery                                                       2021-04-08T18:05:23Z
+system:gcp-controller-manager                                          2021-04-08T18:05:48Z
+system:gke-common-webhooks                                             2021-04-08T18:05:48Z
+system:gke-hpa-service-reader                                          2021-04-08T18:05:54Z
+system:gke-master-resourcequota                                        2021-04-08T18:05:51Z
+system:gke-uas-adapter                                                 2021-04-08T18:05:54Z
+system:gke-uas-collection-reader                                       2021-04-08T18:05:54Z
+system:gke-uas-metrics-reader                                          2021-04-08T18:05:54Z
+system:glbc-status                                                     2021-04-08T18:05:48Z
+system:heapster                                                        2021-04-08T18:05:23Z
+system:kube-aggregator                                                 2021-04-08T18:05:23Z
+system:kube-controller-manager                                         2021-04-08T18:05:23Z
+system:kube-dns                                                        2021-04-08T18:05:23Z
+system:kube-dns-autoscaler                                             2021-04-08T18:05:48Z
+system:kube-scheduler                                                  2021-04-08T18:05:24Z
+system:kubelet-api-admin                                               2021-04-08T18:05:23Z
+system:kubestore-collector                                             2021-04-08T18:05:48Z
+system:managed-certificate-controller                                  2021-04-08T18:05:48Z
+system:master-monitoring-role                                          2021-04-08T18:05:53Z
+system:metrics-server                                                  2021-04-08T18:05:45Z
+system:node                                                            2021-04-08T18:05:23Z
+system:node-bootstrapper                                               2021-04-08T18:05:23Z
+system:node-problem-detector                                           2021-04-08T18:05:23Z
+system:node-proxier                                                    2021-04-08T18:05:24Z
+system:persistent-volume-provisioner                                   2021-04-08T18:05:23Z
+system:public-info-viewer                                              2021-04-08T18:05:23Z
+system:resource-tracker                                                2021-04-08T18:05:51Z
+system:slo-monitor                                                     2021-04-08T18:05:51Z
+system:volume-scheduler                                                2021-04-08T18:05:23Z
+view                                                                   2021-04-08T18:05:23Z
+➜  gloo-mesh-demo git:(master) ✗ k delete clusterrole enterprise-networking
+clusterrole.rbac.authorization.k8s.io "enterprise-networking" deleted
+➜  gloo-mesh-demo git:(master) ✗ k create ns gloo-mesh                     
+helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY
+Error from server (AlreadyExists): namespaces "gloo-mesh" already exists
+Error: template: gloo-mesh-enterprise/charts/enterprise-networking/templates/cert.yaml:8:23: executing "gloo-mesh-enterprise/charts/enterprise-networking/templates/cert.yaml" at <lookup "v1" "Secret" .Release.Namespace "relay-root-tls-secret">: error calling lookup: an error on the server ("Internal Server Error: \"/api/v1/namespaces/gloo-mesh/secrets/relay-root-tls-secret\": the server is currently unable to handle the request") has prevented the request from succeeding
+
+k delete -f install/helm/gloo-mesh-crds/crds
+customresourcedefinition.apiextensions.k8s.io "destinations.discovery.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "meshes.discovery.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "kubernetesclusters.multicluster.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "wasmdeployments.networking.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "trafficpolicies.networking.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "accesspolicies.networking.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "virtualmeshes.networking.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "accesslogrecords.observability.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "roles.rbac.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "rolebindings.rbac.enterprise.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "settings.settings.mesh.gloo.solo.io" deleted
+Error from server (InternalError): error when deleting "install/helm/gloo-mesh-crds/crds/discovery.mesh.gloo.solo.io_v1_crds.yaml": an error on the server ("Internal Server Error: \"/apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/workloads.discovery.mesh.gloo.solo.io\": the server is currently unable to handle the request") has prevented the request from succeeding (delete customresourcedefinitions.apiextensions.k8s.io workloads.discovery.mesh.gloo.solo.io)
+Error from server (InternalError): error when deleting "install/helm/gloo-mesh-crds/crds/networking.enterprise.mesh.gloo.solo.io_v1beta1_crds.yaml": an error on the server ("Internal Server Error: \"/apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/virtualdestinations.networking.enterprise.mesh.gloo.solo.io\": the server is currently unable to handle the request") has prevented the request from succeeding (delete customresourcedefinitions.apiextensions.k8s.io virtualdestinations.networking.enterprise.mesh.gloo.solo.io)
+➜  gloo-mesh git:(main) k get crds
+NAME                                                          CREATED AT
+authorizationpolicies.security.istio.io                       2021-04-08T18:41:37Z
+backendconfigs.cloud.google.com                               2021-04-08T18:06:11Z
+certificaterequests.certificates.mesh.gloo.solo.io            2021-04-08T18:14:02Z
+destinationrules.networking.istio.io                          2021-04-08T18:41:37Z
+envoyfilters.networking.istio.io                              2021-04-08T18:41:38Z
+frontendconfigs.networking.gke.io                             2021-04-08T18:06:12Z
+gateways.networking.istio.io                                  2021-04-08T18:41:38Z
+issuedcertificates.certificates.mesh.gloo.solo.io             2021-04-08T18:14:02Z
+istiooperators.install.istio.io                               2021-04-08T18:41:38Z
+managedcertificates.networking.gke.io                         2021-04-08T18:05:48Z
+peerauthentications.security.istio.io                         2021-04-08T18:41:38Z
+podbouncedirectives.certificates.mesh.gloo.solo.io            2021-04-08T18:14:02Z
+requestauthentications.security.istio.io                      2021-04-08T18:41:38Z
+serviceentries.networking.istio.io                            2021-04-08T18:41:39Z
+servicenetworkendpointgroups.networking.gke.io                2021-04-08T18:06:13Z
+sidecars.networking.istio.io                                  2021-04-08T18:41:39Z
+storagestates.migration.k8s.io                                2021-04-08T18:05:52Z
+storageversionmigrations.migration.k8s.io                     2021-04-08T18:05:52Z
+updateinfos.nodemanagement.gke.io                             2021-04-08T18:05:53Z
+virtualdestinations.networking.enterprise.mesh.gloo.solo.io   2021-04-14T12:29:26Z
+virtualservices.networking.istio.io                           2021-04-08T18:41:39Z
+volumesnapshotclasses.snapshot.storage.k8s.io                 2021-04-08T18:05:51Z
+volumesnapshotcontents.snapshot.storage.k8s.io                2021-04-08T18:05:51Z
+volumesnapshots.snapshot.storage.k8s.io                       2021-04-08T18:05:51Z
+workloadentries.networking.istio.io                           2021-04-08T18:41:39Z
+workloadgroups.networking.istio.io                            2021-04-08T18:41:40Z
+workloads.discovery.mesh.gloo.solo.io                         2021-04-14T12:29:26Z
+xdsconfigs.xds.agent.enterprise.mesh.gloo.solo.io             2021-04-08T18:14:02Z
+➜  gloo-mesh git:(main) k delete crd workloads.discovery.mesh.gloo.solo.io
+customresourcedefinition.apiextensions.k8s.io "workloads.discovery.mesh.gloo.solo.io" deleted
+➜  gloo-mesh git:(main) k delete crd xdsconfigs.xds.agent.enterprise.mesh.gloo.solo.io 
+customresourcedefinition.apiextensions.k8s.io "xdsconfigs.xds.agent.enterprise.mesh.gloo.solo.io" deleted
+➜  gloo-mesh git:(main) k get crds | grep rbac                                         
+➜  gloo-mesh git:(main) k get crds | grep dash
+➜  gloo-mesh git:(main) k get crds | grep mesh.gloo
+certificaterequests.certificates.mesh.gloo.solo.io            2021-04-08T18:14:02Z
+issuedcertificates.certificates.mesh.gloo.solo.io             2021-04-08T18:14:02Z
+podbouncedirectives.certificates.mesh.gloo.solo.io            2021-04-08T18:14:02Z
+virtualdestinations.networking.enterprise.mesh.gloo.solo.io   2021-04-14T12:29:26Z
+➜  gloo-mesh git:(main) k delete crd certificaterequests.certificates.mesh.gloo.solo.io           
+k delete crd issuedcertificates.certificates.mesh.gloo.solo.io
+k delete crd podbouncedirectives.certificates.mesh.gloo.solo.io
+k delete crd virtualdestinations.networking.enterprise.mesh.gloo.solo.io
+customresourcedefinition.apiextensions.k8s.io "certificaterequests.certificates.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "issuedcertificates.certificates.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "podbouncedirectives.certificates.mesh.gloo.solo.io" deleted
+customresourcedefinition.apiextensions.k8s.io "virtualdestinations.networking.enterprise.mesh.gloo.solo.io" deleted

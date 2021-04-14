@@ -7,17 +7,30 @@ _Proof of concept for multi-cluster Istio using Gloo Mesh._
 
 _Set environmental variables for each cluster_
 ```
-REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_cw-remote-cluster
-MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_cw-management-cluster
+REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_case-remote-cluster
+MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_case-mgmt-cluster
 ```
 ## Install Gloo Mesh
+Install  
+```
+meshctl install enterprise --chart-values-file helm-overrides.yaml --license $GLOO_MESH_LICENSE_KEY
+
+meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY
+```  
+  
+  
 Helm installation
 ```
 helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
 
 
 k create ns gloo-mesh
-helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh  --set licenseKey=$GLOO_MESH_LICENSE_KEY
+ helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY
+```
+
+## uninstall
+```
+helm uninstall -n gloo-mesh gloo-mesh-enterprise
 ```
 
 ## Update Enterprise Networking
@@ -60,6 +73,10 @@ spec:
   meshConfig:
     enableAutoMtls: true
     defaultConfig:
+      envoyMetricsService:
+        address: enterprise-agent.gloo-mesh:9977
+      envoyAccessLogService:
+        address: enterprise-agent.gloo-mesh:9977
       proxyMetadata:
         # Enable Istio agent to handle DNS requests for known hosts
         # Unknown hosts will automatically be resolved using upstream dns servers in resolv.conf
@@ -107,6 +124,10 @@ spec:
   meshConfig:
     enableAutoMtls: true
     defaultConfig:
+      envoyMetricsService:
+        address: enterprise-agent.gloo-mesh:9977
+      envoyAccessLogService:
+        address: enterprise-agent.gloo-mesh:9977
       proxyMetadata:
         # Enable Istio agent to handle DNS requests for known hosts
         # Unknown hosts will automatically be resolved using upstream dns servers in resolv.conf
@@ -139,10 +160,7 @@ spec:
 EOF
 ```
 
-## uninstall
-```
-helm uninstall -n gloo-mesh gloo-mesh-enterprise
-```
+
 
 
 Get pods from the management cluster:  
@@ -212,3 +230,40 @@ spec:
     - kind: User
       name: casey.wylie@solo.io
 ```
+
+## AccessLogs 
+Update config map  
+`kubectl --context $MGMT_CONTEXT -n istio-system get configmap istio -oyaml`  
+
+Ensure that the following highlighted entries exist in the ConfigMap:
+```
+data:
+  mesh:
+    defaultConfig:
+      envoyAccessLogService:
+        address: enterprise-agent.gloo-mesh:9977
+      proxyMetadata:
+        GLOO_MESH_CLUSTER_NAME: your-gloo-mesh-registered-cluster-name
+```
+Restart istio injected workloads
+
+Create AccessLog Record:
+```
+apiVersion: observability.enterprise.mesh.gloo.solo.io/v1
+kind: AccessLogRecord
+metadata:
+  name: access-log-all
+  namespace: gloo-mesh
+spec:
+  filters: []
+```
+
+Send Requests
+
+Curl Enterprise Networking pod to localhost 8080
+```
+kubectl --context $MGMT_CONTEXT -n gloo-mesh port-forward deploy/enterprise-networking 8080
+```
+
+Curl Logs:  
+`curl -XPOST 'localhost:8080/v0/observability/logs?pretty'`

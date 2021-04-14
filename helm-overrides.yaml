@@ -1,0 +1,3 @@
+metricsBackend:
+  prometheus:
+    enabled: true

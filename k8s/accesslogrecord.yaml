@@ -1,0 +1,10 @@
+apiVersion: observability.enterprise.mesh.gloo.solo.io/v1
+kind: AccessLogRecord
+metadata:
+  name: access-log-all
+  namespace: gloo-mesh
+spec:
+  filters: []
+    # - headerMatcher:
+    #     name: foo
+    #     value: bar

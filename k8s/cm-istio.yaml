@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  mesh: |-
+    defaultConfig:
+      envoyAccessLogService:
+        address: enterprise-agent.gloo-mesh:9977
+      discoveryAddress: istiod.istio-system.svc:15012
+      proxyMetadata:
+        DNS_AGENT: ""
+        GLOO_MESH_CLUSTER_NAME: mgmt-cluster
+        ISTIO_META_DNS_CAPTURE: "true"
+      tracing:
+        zipkin:
+          address: zipkin.istio-system:9411
+    enableAutoMtls: true
+    enablePrometheusMerge: true
+    rootNamespace: istio-system
+    trustDomain: cluster.local
+  meshNetworks: 'networks: {}'
+kind: ConfigMap
+metadata:
+  name: istio
+  namespace: istio-system
