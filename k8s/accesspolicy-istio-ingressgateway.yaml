@@ -16,3 +16,9 @@ spec:
       - default
       labels:
         service: productpage
+  # - kubeServiceMatcher:
+  #     namespaces:
+  #     - gloo-mesh
+  #     labels:
+  #       service: dashboard
+

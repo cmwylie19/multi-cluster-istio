@@ -44,19 +44,6 @@ kubectl -n istio-system patch svc istio-ingressgateway -p '{"spec": {"type": "Lo
 kubectl -n istio-system patch svc istio-ingressgateway -p '{"spec": {"type": "LoadBalancer"}}' --context $REMOTE_CONTEXT
 ```
 
-## Register Clusters
-```
-SVC=$(kubectl --context $MGMT_CONTEXT -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-SVC=$SVC:9900
-
-meshctl cluster register enterprise   --remote-context=$REMOTE_CONTEXT   --relay-server-address $SVC  remote-cluster 
-meshctl cluster register enterprise   --remote-context=$MGMT_CONTEXT   --relay-server-address $SVC  mgmt-cluster
-```
-
-## DeRegister Cluster
-```
-✗ meshctl cluster deregister enterprise remote-cluster
-```
 
 ## Install Istio in each cluster
 
@@ -161,6 +148,20 @@ EOF
 ```
 
 
+## Register Clusters
+```
+SVC=$(kubectl --context $MGMT_CONTEXT -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+SVC=$SVC:9900
+
+meshctl cluster register enterprise   --remote-context=$REMOTE_CONTEXT   --relay-server-address $SVC  remote-cluster 
+meshctl cluster register enterprise   --remote-context=$MGMT_CONTEXT   --relay-server-address $SVC  mgmt-cluster
+```
+
+## DeRegister Cluster
+```
+✗ meshctl cluster deregister enterprise remote-cluster
+✗ meshctl cluster deregister enterprise mgmt-cluster
+```
 
 
 Get pods from the management cluster:  
@@ -181,27 +182,42 @@ Describe the Virtual Mesh
 `meshctl describe mesh`
 
 Deploy Bookinfo Application in Management Cluster:  
-`kubectl config use-context $MGMT_CONTEXT`
-
-`kubectl create ns bookinfo`
-`kubectl label namespace bookinfo istio-injection=enabled`
-​
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app,version notin (v3)'`
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account'`
+```
+kubectl --context $MGMT_CONTEXT label namespace default istio-injection=enabled
+# deploy bookinfo application components for all versions less than v3
+kubectl --context $MGMT_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app,version notin (v3)'
+# deploy all bookinfo service accounts
+kubectl --context $MGMT_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account'
+# configure ingress gateway to access bookinfo
+kubectl --context $MGMT_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/networking/bookinfo-gateway.yaml
+````
 
 Deploy Bookinfo Application in Remote Cluster:  
-`kubectl config use-context $REMOTE_CONTEXT`  
+```
+kubectl --context $REMOTE_CONTEXT label namespace default istio-injection=enabled
+# deploy all bookinfo service accounts and application components for all versions
+kubectl --context $REMOTE_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml
+# configure ingress gateway to access bookinfo
+kubectl --context $REMOTE_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/networking/bookinfo-gateway.yaml
+```
 
-`kubectl create ns bookinfo`  
-`kubectl label namespace bookinfo istio-injection=enabled`  
-​
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app,version in (v3)'`   
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'service=reviews'`  
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account=reviews'`   
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app=ratings' `  
-`kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.8/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account=ratings'`   
+## FailOver
+Make reviews unavailable to the first cluster:   
+```
+kubectl --context $MGMT_CONTEXT patch deploy reviews-v1 --patch '{"spec": {"template": {"spec": {"containers": [{"name": "reviews","command": ["sleep", "20h"]}]}}}}'
+kubectl --context $MGMT_CONTEXT patch deploy reviews-v2 --patch '{"spec": {"template": {"spec": {"containers": [{"name": "reviews","command": ["sleep", "20h"]}]}}}}'
+```
 
+Validate requests are being handled by the second cluster:  
+```
+kubectl --context cluster2 logs -l app=reviews -c istio-proxy -f
+```
 
+Enable reviews traffic in first cluster:
+```
+kubectl --context $MGMT_CONTEXT patch deployment reviews-v1  --type json   -p '[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
+kubectl --context $MGMT_CONTEXT patch deployment reviews-v2  --type json   -p '[{"op": "remove", "path": "/spec/template/spec/containers/0/command"}]'
+```
 Get workloads in the mesh  
 `k -n gloo-mesh get workloads`
 
@@ -245,7 +261,16 @@ data:
       proxyMetadata:
         GLOO_MESH_CLUSTER_NAME: your-gloo-mesh-registered-cluster-name
 ```
-Restart istio injected workloads
+Restart istio injected workloads:   
+```
+k rollout restart deploy/details-v1 deploy/productpage-v1 deploy/ratings-v1 deploy/reviews-v1 deploy/reviews-v2
+```
+
+Remote:   
+```
+k rollout restart deploy/details-v1 deploy/productpage-v1 deploy/ratings-v1 deploy/reviews-v1 deploy/reviews-v2 deploy/reviews-v3 --context $REMOTE_CONTEXT
+```
+
 
 Create AccessLog Record:
 ```
@@ -258,6 +283,8 @@ spec:
   filters: []
 ```
 
+
+
 Send Requests
 
 Curl Enterprise Networking pod to localhost 8080
@@ -267,3 +294,6 @@ kubectl --context $MGMT_CONTEXT -n gloo-mesh port-forward deploy/enterprise-netw
 
 Curl Logs:  
 `curl -XPOST 'localhost:8080/v0/observability/logs?pretty'`
+
+
+## Metrics

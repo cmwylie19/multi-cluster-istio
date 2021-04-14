@@ -1,0 +1,17 @@
+apiVersion: networking.mesh.gloo.solo.io/v1
+kind: TrafficPolicy
+metadata:
+  name: dashboard
+  namespace: gloo-mesh
+spec:
+  httpRequestMatchers:
+    - exact: "/dashboard"
+  destinationSelector:
+  - kubeServiceRefs:
+      services:
+        - clusterName: mgmt-cluster
+          name: dashboard
+          namespace: gloo-mesh
+
+
+

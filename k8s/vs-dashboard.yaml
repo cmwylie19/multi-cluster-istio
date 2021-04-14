@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dashboard
+  namespace: default
+spec:
+  gateways:
+  - bookinfo-gateway
+  hosts:
+  - "*"
+  http:
+  - name: "gloo-mesh-dashboard"
+    match:
+    - uri:
+        exact: /dashboard
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: dashboard.gloo-mesh.svc.cluster.local
+        port:
+          number: 8090
