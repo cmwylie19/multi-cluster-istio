@@ -156,8 +156,7 @@ EOF
 
 ## Register Clusters
 ```
-SVC=$(kubectl --context $MGMT_CONTEXT -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-SVC=$SVC:9900
+SVC=$(kubectl --context $MGMT_CONTEXT -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):9900
 
 meshctl cluster register enterprise   --remote-context=$REMOTE_CONTEXT   --relay-server-address $SVC  remote-cluster 
 meshctl cluster register enterprise   --remote-context=$MGMT_CONTEXT   --relay-server-address $SVC  mgmt-cluster
@@ -303,3 +302,10 @@ Curl Logs:
 
 
 ## Metrics
+# port-forward enterprise networking  
+kubectl -n gloo-mesh port-forward deploy/enterprise-networking 8080  
+
+# request metrics  
+curl localhost:8080/metrics  
+
+kubectl -n gloo-mesh port-forward deploy/prometheus-server 9090  
