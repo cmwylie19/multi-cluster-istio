@@ -68,6 +68,7 @@ spec:
         # Enable Istio agent to handle DNS requests for known hosts
         # Unknown hosts will automatically be resolved using upstream dns servers in resolv.conf
         ISTIO_META_DNS_CAPTURE: "true"
+        GLOO_MESH_CLUSTER_NAME: mgmt-cluster
   components:
     # Istio Gateway feature
     ingressGateways:
@@ -92,6 +93,8 @@ spec:
               nodePort: 32001
   values:
     global:
+      multiCluster:
+        clusterName: mgmt-cluster
       pilotCertProvider: istiod
 EOF
 ```
@@ -119,6 +122,7 @@ spec:
         # Enable Istio agent to handle DNS requests for known hosts
         # Unknown hosts will automatically be resolved using upstream dns servers in resolv.conf
         ISTIO_META_DNS_CAPTURE: "true"
+        GLOO_MESH_CLUSTER_NAME: remote-cluster
   components:
     # Istio Gateway feature
     ingressGateways:
@@ -143,6 +147,8 @@ spec:
               nodePort: 32000
   values:
     global:
+      multiCluster: 
+        clusterName: remote-cluster
       pilotCertProvider: istiod
 EOF
 ```

@@ -5,6 +5,3 @@ metadata:
   namespace: gloo-mesh
 spec:
   filters: []
-    # - headerMatcher:
-    #     name: foo
-    #     value: bar

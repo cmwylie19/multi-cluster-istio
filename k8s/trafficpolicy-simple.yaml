@@ -23,18 +23,18 @@ spec:
             namespace: default
             subset:
               version: v3
-          weight: 75
+          weight: 60
         - kubeService:
             clusterName: mgmt-cluster
             name: reviews
             namespace: default
             subset:
               version: v1
-          weight: 15
+          weight: 0
         - kubeService:
             clusterName: mgmt-cluster
             name: reviews
             namespace: default
             subset:
               version: v2
-          weight: 10
+          weight: 40
