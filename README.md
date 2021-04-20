@@ -7,8 +7,8 @@ _Proof of concept for multi-cluster Istio using Gloo Mesh._
 
 _Set environmental variables for each cluster_
 ```
-REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_case-remote-cluster
-MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_case-mgmt-cluster
+REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_cw-remote-cluster
+MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_cw-mgmt-cluster
 ```
 ## Install Gloo Mesh
 Install  
@@ -98,18 +98,16 @@ spec:
       pilotCertProvider: istiod
 EOF
 ```
+
 Remote Cluster
-From istio 1.8/bin
 ```
-cat << EOF | ./istioctl manifest install -y -f -
+cat << EOF | istioctl manifest install -y --context $REMOTE_CONTEXT -f -
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
-  name: gloo-mesh-istio
+  name: example-istiooperator
   namespace: istio-system
 spec:
-  # This value is required for Gloo Mesh Istio
-  # This value can be any Gloo Mesh Istio tag
   profile: minimal
   meshConfig:
     enableAutoMtls: true
@@ -133,7 +131,7 @@ spec:
           - name: ISTIO_META_ROUTER_MODE
             value: "sni-dnat"
         service:
-          type: LoadBalancer
+          type: NodePort
           ports:
             - port: 80
               targetPort: 8080
@@ -144,10 +142,10 @@ spec:
             - port: 15443
               targetPort: 15443
               name: tls
-              nodePort: 32000
+              nodePort: 32001
   values:
     global:
-      multiCluster: 
+      multiCluster:
         clusterName: remote-cluster
       pilotCertProvider: istiod
 EOF

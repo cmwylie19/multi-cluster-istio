@@ -21,8 +21,3 @@ spec:
       - default
       labels:
         service: reviews
-  # - kubeServiceMatcher:
-  #     namespaces:
-  #     - default
-  #     labels:
-  #       service: ratings
