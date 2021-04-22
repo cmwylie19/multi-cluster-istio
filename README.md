@@ -307,3 +307,19 @@ kubectl -n gloo-mesh port-forward deploy/enterprise-networking 8080
 curl localhost:8080/metrics  
 
 kubectl -n gloo-mesh port-forward deploy/prometheus-server 9090  
+
+
+## Upgrade 
+Install the CRDS
+```
+https://raw.githubusercontent.com/solo-io/gloo-mesh/v1.1.0-beta1/install/helm/gloo-mesh-crds/crds/discovery.mesh.gloo.solo.io_v1_crds.yaml
+```
+
+Uninstall Gloo
+```
+helm uninstall -n gloo-mesh gloo-mesh-enterprise
+```
+Upgrade the helm chart
+```
+helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise  --version 1.1.0-beta3 --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY   --force
+```
