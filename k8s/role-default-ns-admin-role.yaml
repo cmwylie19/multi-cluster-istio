@@ -1,0 +1,104 @@
+apiVersion: rbac.enterprise.mesh.gloo.solo.io/v1
+kind: Role
+metadata:
+  name: default-namespace-admin-role
+  namespace: gloo-mesh
+spec:
+  trafficPolicyScopes:
+    - trafficPolicyActions:
+        - ALL
+      destinationSelectors:
+        - kubeServiceMatcher:
+            labels:
+              "*": "*"
+            namespaces:
+              - "default"
+            clusters:
+              - "*"
+        - kubeServiceRefs:
+            services:
+              - name: "*"
+                namespace: "default"
+                clusterName: "*"
+      workloadSelectors:
+        - kubeWorkloadMatcher:
+            labels:
+              "*": "*"
+            namespaces:
+              - "default"
+            clusters:
+              - "*"
+  virtualMeshScopes:
+    - virtualMeshActions:
+        - ALL
+      meshRefs:
+        - name: "*"
+          namespace: "default"
+  accessPolicyScopes:
+    - identitySelectors:
+        - kubeIdentityMatcher:
+            namespaces:
+              - "default"
+            clusters:
+              - "*"
+          kubeServiceAccountRefs:
+            serviceAccounts:
+              - name: "*"
+                namespace: "default"
+                clusterName: "*"
+      destinationSelectors:
+        - kubeServiceMatcher:
+            labels:
+              "*": "*"
+            namespaces:
+              - "default"
+            clusters:
+              - "*"
+          kubeServiceRefs:
+            services:
+              - name: "*"
+                namespace: "default"
+                clusterName: "*"
+  virtualDestinationScopes:
+    - virtualMeshRefs:
+        - name: "*"
+          namespace: "default"
+      meshRefs:
+        - name: "*"
+          namespace: "default"
+      destinationSelectors:
+        - kubeServiceMatcher:
+            labels:
+              "*": "*"
+            namespaces:
+              - "default"
+            clusters:
+              - "*"
+          kubeServiceRefs:
+            services:
+              - name: "*"
+                namespace: "default"
+                clusterName: "*"
+      destinations:
+        - kubeService:
+            name: "*"
+            namespace: "default"
+            clusterName: "*"
+  wasmDeploymentScopes:
+    - workloadSelectors:
+        - kubeWorkloadMatcher:
+            labels:
+              "*": "*"
+            namespaces:
+              - "default"
+            clusters:
+              - "*"
+  accessLogRecordScopes:
+    - workloadSelectors:
+        - kubeWorkloadMatcher:
+            labels:
+              "*": "*"
+            namespaces:
+              - "default"
+            clusters:
+              - "*"

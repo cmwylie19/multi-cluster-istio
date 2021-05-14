@@ -1,0 +1,26 @@
+apiVersion: networking.mesh.gloo.solo.io/v1
+kind: TrafficPolicy
+metadata:
+  namespace: gloo-mesh
+  name: multicluster-reviews-canary
+spec:
+  httpRequestMatchers:
+    - headers:
+        - name: user-agent
+          value: '.*Firefox.*'
+          regex: true
+  destinationSelector:
+  - kubeServiceRefs:
+      services:
+        - clusterName: remotecluster1
+          name: reviews
+          namespace: default
+  policy:
+    trafficShift:
+      destinations:
+        - kubeService:
+            clusterName: remotecluster3
+            name: reviews
+            namespace: default
+            subset:
+              version: v3

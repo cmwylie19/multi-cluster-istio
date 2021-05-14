@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: mesh-external-entry
+  namespace: ext-services
+spec:
+  endpoints:
+  - address: a.b.c.com
+    ports:
+      https: 443
+  exportTo:
+  - .
+  hosts:
+  - a.b.test.com
+  location: MESH_EXTERNAL
+  ports:
+  - name: http
+    number: 80
+    protocol: HTTP
+  - name: https
+    number: 443
+    protocol: HTTPS
+  resolution: DNS

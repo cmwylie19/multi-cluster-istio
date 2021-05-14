@@ -10,16 +10,9 @@ _Set environmental variables for each cluster_
 REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_cw-remote-cluster
 MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_cw-mgmt-cluster
 ```
+GLOO_MESH_LICENSE_KEY="$(cat ~/Playground/licensing/mesh.key)"
 ## Install Gloo Mesh
-Install  
-```
-meshctl install enterprise --chart-values-file helm-overrides.yaml --license $GLOO_MESH_LICENSE_KEY
-
-meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY
-```  
-  
-  
-Helm installation
+**Helm installation**
 ```
 helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
 
@@ -33,17 +26,11 @@ k create ns gloo-mesh
 helm uninstall -n gloo-mesh gloo-mesh-enterprise
 ```
 
-## Update Enterprise Networking
+<!-- ## Update Enterprise Networking
 Path the enterprise networking to be of type loadbalancer
 ```
 kubectl -n gloo-mesh patch svc enterprise-networking -p '{"spec": {"type": "LoadBalancer"}}' 
-```
-Patch the istio ingressgateway to be of type loadbalancer 
-```
-kubectl -n istio-system patch svc istio-ingressgateway -p '{"spec": {"type": "LoadBalancer"}}' --context $MGMT_CONTEXT
-kubectl -n istio-system patch svc istio-ingressgateway -p '{"spec": {"type": "LoadBalancer"}}' --context $REMOTE_CONTEXT
-```
-
+``` -->
 
 ## Install Istio in each cluster
 
@@ -79,7 +66,7 @@ spec:
           - name: ISTIO_META_ROUTER_MODE
             value: "sni-dnat"
         service:
-          type: NodePort
+          type: LoadBalancer
           ports:
             - port: 80
               targetPort: 8080
@@ -131,7 +118,7 @@ spec:
           - name: ISTIO_META_ROUTER_MODE
             value: "sni-dnat"
         service:
-          type: NodePort
+          type: LoadBalancer
           ports:
             - port: 80
               targetPort: 8080
@@ -166,15 +153,6 @@ meshctl cluster register enterprise   --remote-context=$MGMT_CONTEXT   --relay-s
 ✗ meshctl cluster deregister enterprise mgmt-cluster
 ```
 
-
-Get pods from the management cluster:  
-`kubectl --context $MGMT_CONTEXT get po -n gloo-mesh`
-
-Check the install:  
-`meshctl check`
-
-Install Gloo Mesh enterprise:  
-`meshctl install enterprise --license $GLOO_MESH_LICENSE_KEY`
 
 
 ## Using Gloo Mesh

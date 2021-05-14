@@ -11,3 +11,4 @@ kubectl --context $REMOTE_CONTEXT label namespace default istio-injection=enable
 kubectl --context $REMOTE_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/platform/kube/bookinfo.yaml
 # configure ingress gateway to access bookinfo
 kubectl --context $REMOTE_CONTEXT apply -f https://raw.githubusercontent.com/istio/istio/1.8.2/samples/bookinfo/networking/bookinfo-gateway.yaml
+

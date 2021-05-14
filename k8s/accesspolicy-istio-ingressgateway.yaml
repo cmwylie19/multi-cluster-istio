@@ -16,9 +16,12 @@ spec:
       - default
       labels:
         service: productpage
-  # - kubeServiceMatcher:
-  #     namespaces:
-  #     - gloo-mesh
-  #     labels:
-  #       service: dashboard
+  allowedMethods:
+  - "GET"
+  allowedPorts:
+  - 9080
+  allowedPaths:
+  - "/productpage"
+  - "/static/*"
+
 
