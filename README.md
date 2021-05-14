@@ -301,3 +301,10 @@ Upgrade the helm chart
 ```
 helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise  --version 1.1.0-beta3 --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY   --force
 ```
+
+
+### Delete CRDS
+```
+kubectl get crd | grep --color=never 'solo.io' | awk '{print $1}' \
+    | xargs -n1 kubectl delete crd
+    ```
