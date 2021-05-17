@@ -315,3 +315,12 @@ kubectl get crd | grep --color=never 'solo.io' | awk '{print $1}' \
 
 oc get crds -o name | grep ‘solo.io’ | xargs -r -n 1 oc delete
     ```
+
+### Istio
+Check authorization policies:
+```
+istioctl x authz check productpage-v1-65576bb7bf-jw5dg -n default
+```
+
+
+
