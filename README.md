@@ -21,9 +21,9 @@ GLOO_MESH_LICENSE_KEY="$(cat ~/Playground/licensing/mesh.key)"
 ```
 helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
 
+kubectl create ns gloo-mesh
 
-k create ns gloo-mesh
- helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY
+helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY
 ```
 
 ## uninstall
@@ -304,7 +304,7 @@ helm uninstall -n gloo-mesh gloo-mesh-enterprise
 ```
 Upgrade the helm chart
 ```
-helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise  --version 1.1.0-beta3 --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY   --force
+helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise  --version 1.1.0-beta6 --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY   --force
 ```
 
 
