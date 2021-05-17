@@ -5,6 +5,11 @@ _Proof of concept for multi-cluster Istio using Gloo Mesh._
 - Create two clusters
 - Management plane cluster needs to be >= medium
 
+## Get Current User
+```
+gcloud config get-value core/account
+```
+
 _Set environmental variables for each cluster_
 ```
 REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_cw-remote-cluster
@@ -307,4 +312,6 @@ helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enter
 ```
 kubectl get crd | grep --color=never 'solo.io' | awk '{print $1}' \
     | xargs -n1 kubectl delete crd
+
+oc get crds -o name | grep ‘solo.io’ | xargs -r -n 1 oc delete
     ```
