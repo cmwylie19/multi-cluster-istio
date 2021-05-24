@@ -31,12 +31,6 @@ helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --na
 helm uninstall -n gloo-mesh gloo-mesh-enterprise
 ```
 
-<!-- ## Update Enterprise Networking
-Path the enterprise networking to be of type loadbalancer
-```
-kubectl -n gloo-mesh patch svc enterprise-networking -p '{"spec": {"type": "LoadBalancer"}}' 
-``` -->
-
 ## Install Istio in each cluster
 
 Management Cluster
@@ -293,9 +287,19 @@ kubectl -n gloo-mesh port-forward deploy/prometheus-server 9090
 
 
 ## Upgrade 
+Scale the deployments in gloo-mesh namespace to 0
+```
+k scale deploy dashboard enterprise-agent enterprise-networking prometheus-server rbac-webhook -n gloo-mesh --replicas=0
+```
+
 Install the CRDS
 ```
-https://raw.githubusercontent.com/solo-io/gloo-mesh/v1.1.0-beta1/install/helm/gloo-mesh-crds/crds/discovery.mesh.gloo.solo.io_v1_crds.yaml
+https://raw.githubusercontent.com/solo-io/gloo-mesh/v1.1.0-beta8/install/helm/gloo-mesh-crds/crds/discovery.mesh.gloo.solo.io_v1_crds.yaml
+```
+
+Scale the deployments in gloo-mesh namespace to 1
+```
+k scale deploy dashboard enterprise-agent enterprise-networking prometheus-server rbac-webhook -n gloo-mesh --replicas=1
 ```
 
 Uninstall Gloo
@@ -310,11 +314,10 @@ helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enter
 
 ### Delete CRDS
 ```
-kubectl get crd | grep --color=never 'solo.io' | awk '{print $1}' \
-    | xargs -n1 kubectl delete crd
+kubectl get crd | grep --color=never 'solo.io' | awk '{print $1}' | xargs -n1 kubectl delete crd
 
 oc get crds -o name | grep ‘solo.io’ | xargs -r -n 1 oc delete
-    ```
+```
 
 ### Istio
 Check authorization policies:
@@ -323,4 +326,28 @@ istioctl x authz check productpage-v1-65576bb7bf-jw5dg -n default
 ```
 
 
+### Check Routes for a given deployment
+```
+istioctl pc route deploy/istio-ingressgateway.istio-system
+```
 
+### Prod Upgrade
+Scale down deployment of gloo mesh.   
+
+Deregister Clusters
+```
+✗ meshctl cluster deregister enterprise cluster1 
+✗ meshctl cluster deregister enterprise cluster2
+```
+
+Upgrade the remote cluster enterprise-agents
+```
+✗ helm upgrade --install enterprise-agent --namespace gloo-mesh https://storage.googleapis.com/gloo-mesh-enterprise/enterprise-agent/enterprise-agent-1.0.11.tgz
+```
+
+Upgrade the management cluster
+```
+✗ helm upgrade --install gloo-mesh --namespace gloo-mesh https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise/gloo-mesh-enterprise-1.0.11.tgz --set licenseKey=$GLOO_MESH_LICENSE_KEY
+```
+
+Register Clusters again

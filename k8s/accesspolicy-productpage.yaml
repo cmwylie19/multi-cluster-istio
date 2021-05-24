@@ -21,3 +21,5 @@ spec:
       - default
       labels:
         service: reviews
+  allowedPorts:
+  - 9080

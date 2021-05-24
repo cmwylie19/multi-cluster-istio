@@ -16,3 +16,5 @@ spec:
       - default
       labels:
         service: ratings
+  allowedPorts:
+  - 9080
