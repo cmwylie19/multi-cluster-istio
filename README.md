@@ -12,10 +12,14 @@ gcloud config get-value core/account
 
 _Set environmental variables for each cluster_
 ```
-REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_cw-remote-cluster
-MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_cw-mgmt-cluster
-```
 GLOO_MESH_LICENSE_KEY="$(cat ~/Playground/licensing/mesh.key)"
+REMOTE_CONTEXT=gke_solo-test-236622_us-east1-b_remote-cluster-cw
+MGMT_CONTEXT=gke_solo-test-236622_us-east1-b_mgmt-cluster-cw
+MGMT=gke_solo-test-236622_us-east1-b_mgmt-cluster-cw
+CLUSTER1=gke_solo-test-236622_us-east1-b_mgmt-cluster-cw
+CLUSTER2=gke_solo-test-236622_us-east1-b_remote-cluster-cw
+```
+
 ## Install Gloo Mesh
 **Helm installation**
 ```
@@ -23,7 +27,7 @@ helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-ente
 
 kubectl create ns gloo-mesh
 
-helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY
+helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --version=1.1.0-beta11  --set licenseKey=$GLOO_MESH_LICENSE_KEY
 ```
 
 ## uninstall
@@ -148,8 +152,8 @@ meshctl cluster register enterprise   --remote-context=$MGMT_CONTEXT   --relay-s
 
 ## DeRegister Cluster
 ```
-✗ meshctl cluster deregister enterprise remote-cluster
-✗ meshctl cluster deregister enterprise mgmt-cluster
+meshctl cluster deregister enterprise remote-cluster
+meshctl cluster deregister enterprise mgmt-cluster
 ```
 
 
@@ -308,7 +312,7 @@ helm uninstall -n gloo-mesh gloo-mesh-enterprise
 ```
 Upgrade the helm chart
 ```
-helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise  --version 1.1.0-beta6 --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY   --force
+helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise  --version 1.1.0-beta10 --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --set licenseKey=$GLOO_MESH_LICENSE_KEY   --force
 ```
 
 
@@ -342,12 +346,25 @@ Deregister Clusters
 
 Upgrade the remote cluster enterprise-agents
 ```
-✗ helm upgrade --install enterprise-agent --namespace gloo-mesh https://storage.googleapis.com/gloo-mesh-enterprise/enterprise-agent/enterprise-agent-1.0.11.tgz
+✗ helm upgrade --install enterprise-agent --namespace gloo-mesh https://storage.googleapis.com/gloo-mesh-enterprise/enterprise-agent/enterprise-agent-1.1.0-beta10.tgz
 ```
 
 Upgrade the management cluster
 ```
-✗ helm upgrade --install gloo-mesh --namespace gloo-mesh https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise/gloo-mesh-enterprise-1.0.11.tgz --set licenseKey=$GLOO_MESH_LICENSE_KEY
+✗ helm upgrade --install gloo-mesh-enterprise --namespace gloo-mesh https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise/gloo-mesh-enterprise-1.1.0-beta10.tgz --set licenseKey=$GLOO_MESH_LICENSE_KEY
 ```
 
 Register Clusters again
+
+
+## Errors only logs
+```
+k logs deploy/enterprise-networking -n gloo-mesh | grep '^{"level":"error"' | jq
+```
+
+## Helm Show versions
+```
+ helm search repo glooe --versions
+ ```
+
+ ## Upgrade 
