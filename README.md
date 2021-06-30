@@ -27,12 +27,7 @@ helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-ente
 
 kubectl create ns gloo-mesh
 
-helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --version=1.1.0-beta11  --set licenseKey=$GLOO_MESH_LICENSE_KEY
-```
-
-## uninstall
-```
-helm uninstall -n gloo-mesh gloo-mesh-enterprise
+helm install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise --namespace gloo-mesh --set enterprise-networking.metricsBackend.prometheus.enabled=true --version=1.1.0-beta17  --set licenseKey=$GLOO_MESH_LICENSE_KEY
 ```
 
 ## Install Istio in each cluster
@@ -47,6 +42,7 @@ metadata:
   namespace: istio-system
 spec:
   profile: minimal
+  tag: 1.10.2
   meshConfig:
     enableAutoMtls: true
     defaultConfig:
@@ -99,6 +95,7 @@ metadata:
   namespace: istio-system
 spec:
   profile: minimal
+  tag: 1.10.2
   meshConfig:
     enableAutoMtls: true
     defaultConfig:
@@ -368,3 +365,8 @@ k logs deploy/enterprise-networking -n gloo-mesh | grep '^{"level":"error"' | jq
  ```
 
  ## Upgrade 
+
+ ## uninstall
+```
+helm uninstall -n gloo-mesh gloo-mesh-enterprise
+```
